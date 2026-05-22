@@ -3,6 +3,8 @@ venv/
 
 # sensitive data
 .env
+deploy_key
+deploy_key.pub
 
 # Python
 __pycache__/

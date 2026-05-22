@@ -124,6 +124,7 @@ def main():
     parser.add_argument("--end", type=str, help="End date (YYYY-MM-DD)")
     parser.add_argument("--dry-run", action="store_true", help="Print anomalies without writing to OpenSearch")
     parser.add_argument("--threshold", type=float, default=0.65, help="Anomaly grade threshold (0-1)")
+    parser.add_argument("--cooldown", type=int, default=15, help="Cooldown period in points to suppress echo detections")
     args = parser.parse_args()
     
     client = get_opensearch_client()
@@ -149,8 +150,7 @@ def main():
         
     scores_df["is_anomaly"] = scores_df["anomaly_grade"] >= args.threshold
     
-    # Cooldown logic: suppress "echo" detections within shingle_size points of an anomaly
-    shingle_size = 4 # matches default in run_rrcf
+    # Cooldown logic: suppress "echo" detections within args.cooldown points of an anomaly
     cooldown = 0
     is_anomaly_suppressed = []
     
@@ -162,7 +162,7 @@ def main():
         
         if row["is_anomaly"]:
             is_anomaly_suppressed.append(True)
-            cooldown = shingle_size
+            cooldown = args.cooldown
         else:
             is_anomaly_suppressed.append(False)
             
