@@ -1,0 +1,7 @@
+rrcf
+numpy
+pandas
+opensearch-py
+python-dotenv
+scipy
+setuptools==69.5.1
